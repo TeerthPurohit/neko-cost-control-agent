@@ -12,7 +12,7 @@ root=Path(__file__).resolve().parent.parent
 destination=(root/args.output).resolve()
 if not destination.is_relative_to(root):
     raise SystemExit('Output must stay in the Neko workspace')
-result=subprocess.run(['neon.cmd','connection-string',args.branch,'--project-id','tiny-firefly-90266647','--no-color','-o','json'],capture_output=True,text=True,cwd=root)
+result=subprocess.run(['neon.cmd','connection-string',args.branch,'--project-id','YOUR_NEON_PROJECT_ID','--no-color','-o','json'],capture_output=True,text=True,cwd=root)
 if result.returncode:
     raise SystemExit('Could not retrieve branch connection; sign in with neon login')
 try:

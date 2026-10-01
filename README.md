@@ -20,6 +20,6 @@ spending policy are excluded from Git. Model API keys belong on the backend.
 Raw transaction SMS stays on the Android device.
 
 This is a sanitized public source snapshot. Personal finance names are replaced
-with generic examples, and the backend URL and Fly app name are placeholders.
-Configure your own deployment before using it. Never commit real credentials or
+with generic examples, and backend and deployment values are placeholders.
+Configure your own deployment before use. Never commit real credentials or
 personal financial records.
