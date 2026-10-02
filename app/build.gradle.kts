@@ -14,8 +14,8 @@ android {
         applicationId = "dev.neko.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.1.2"
         val backendUrl = rootProject.file(".env").takeIf { it.exists() }?.readLines()?.firstOrNull { it.startsWith("NEKO_BACKEND_URL=") }?.substringAfter('=')?.trim().orEmpty()
         buildConfigField("String", "DEFAULT_BACKEND_URL", "\"" + backendUrl.replace("\\", "\\\\").replace("\"", "\\\"") + "\"")
     }

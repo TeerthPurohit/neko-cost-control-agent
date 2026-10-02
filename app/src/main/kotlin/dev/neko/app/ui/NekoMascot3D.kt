@@ -51,6 +51,12 @@ private class NekoMascotWebView(context: Context, private val onLoadFailed: () -
     private var pageReady = false
     private var speaking = false
     private var reducedMotion = false
+    private var released = false
+    private val rendererCheck = Runnable {
+        if (!released) evaluateJavascript("Boolean(document.querySelector('#neko')?.loaded)") { loaded ->
+            if (!released && loaded != "true") onLoadFailed()
+        }
+    }
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
@@ -76,6 +82,7 @@ private class NekoMascotWebView(context: Context, private val onLoadFailed: () -
             override fun onPageFinished(view: WebView, url: String) {
                 pageReady = url == baseUrl
                 applyAgentState()
+                if (pageReady) postDelayed(rendererCheck, 10_000)
             }
 
             override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
@@ -96,6 +103,8 @@ private class NekoMascotWebView(context: Context, private val onLoadFailed: () -
     }
 
     fun release() {
+        released = true
+        removeCallbacks(rendererCheck)
         stopLoading()
         webViewClient = WebViewClient()
         removeAllViews()
@@ -154,7 +163,7 @@ private class NekoMascotWebView(context: Context, private val onLoadFailed: () -
             <head>
               <meta charset="utf-8">
               <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-              <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'">
+              <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' blob: 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' data: blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'none'">
               <style>
                 html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: transparent; }
                 #halo { position: absolute; inset: 7%; border-radius: 50%; pointer-events: none;
