@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
         }}
         item{Panel(Modifier.fillMaxWidth()){
             Text("Splitwise",style=MaterialTheme.typography.titleLarge);Text("Connect your existing account directly from this phone. Its key stays encrypted on this device; it isn't sent to Neko's backend.",color=MaterialTheme.colorScheme.onSurfaceVariant)
-            PrimaryButton(if(state.splitwiseConnected)"Change connection"else"Connect Splitwise",{splitwise=true},enabled=!state.busy)
+            PrimaryButton(if(state.splitwiseConnected)"Change connection"else"Connect Splitwise",{splitwise=true})
             if(state.splitwiseConnected)TextButton(model::disconnectSplitwise){Text("Disconnect Splitwise")}
         }}
         if(state.transactions.isNotEmpty())item{Panel(Modifier.fillMaxWidth()){
@@ -46,8 +46,15 @@ import androidx.compose.ui.unit.dp
             state.transactions.map{it.account}.distinct().forEach{account->Row(verticalAlignment=Alignment.CenterVertically){Text(account,Modifier.weight(1f));Checkbox(account in state.ownAccounts,{model.setOwned(account,it)})}}
         }}
         item{Panel(Modifier.fillMaxWidth()){
-            Text("Push notifications",style=MaterialTheme.typography.titleLarge);Text("Optional: import your Android Firebase configuration to receive server check-ins sooner. Without it, background sync retrieves updates when Android permits.",color=MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedButton(onFirebase){Text("Import Firebase configuration")}
+            Text("Push notifications",style=MaterialTheme.typography.titleLarge)
+            if(state.firebaseConfigured){
+                StatusPill("Firebase configured",true)
+                Text("Allow notifications and keep your Neko account connected to receive check-ins. Background sync also retrieves updates when Android permits.",color=MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(onPermissions){Text("Manage notification permissions")}
+            }else{
+                Text("Import your Android Firebase configuration to receive server check-ins. Without it, background sync retrieves updates when Android permits.",color=MaterialTheme.colorScheme.onSurfaceVariant)
+                OutlinedButton(onFirebase){Text("Import Firebase configuration")}
+            }
         }}
         item{Panel(Modifier.fillMaxWidth()){
             Text("Account Aggregator",style=MaterialTheme.typography.titleLarge);StatusPill("Integration pending",false)
