@@ -23,9 +23,9 @@ fun NekoMascot3D(
     reducedMotion: Boolean,
 ) {
     val description = if (speaking) {
-        "Neko, the 3D cream-and-orange cat with glasses, is replying"
+        "Neko, the white lucky cat with small glasses, is replying"
     } else {
-        "Neko, the animated 3D cream-and-orange cat with glasses and a golden bell"
+        "Neko, the animated white lucky cat with small glasses, a green bib and a gold coin"
     }
 
     AndroidView(
@@ -152,10 +152,10 @@ private class NekoMascotWebView(context: Context) : WebView(context) {
             <body>
               <div id="halo" aria-hidden="true"></div>
               <model-viewer id="neko" src="/assets/models/neko.glb"
-                alt="Neko, a cream-and-orange cat wearing round cyan glasses and a golden bell"
+                alt="Neko, a smiling white lucky cat with small glasses, a raised paw, green bib and gold coin"
                 autoplay animation-name="A warm hello" disable-pan disable-zoom
                 interaction-prompt="none" shadow-intensity="0.7" exposure="1.05"
-                camera-orbit="0deg 72deg auto" field-of-view="30deg"></model-viewer>
+                camera-orbit="0deg 82deg auto" field-of-view="30deg"></model-viewer>
               <script type="module" src="/assets/neko/agent.js"></script>
             </body>
             </html>
