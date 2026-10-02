@@ -2,6 +2,10 @@ plugins {
     id("com.android.application")
     kotlin("android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services") apply false
+}
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
 }
 android {
     namespace = "dev.neko.app"

@@ -45,3 +45,5 @@ docs/personal-spending-policy.md
 *firebase-adminsdk*.json
 *service-account*.json
 *credentials*.json
+app/google-services.json
+.firebase/
