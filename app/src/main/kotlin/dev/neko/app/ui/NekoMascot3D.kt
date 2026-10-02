@@ -5,16 +5,11 @@ import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.webkit.WebResourceRequest
-import android.webkit.WebResourceError
 import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -27,36 +22,25 @@ fun NekoMascot3D(
     speaking: Boolean,
     reducedMotion: Boolean,
 ) {
-    var loadFailed by remember { mutableStateOf(false) }
     val description = if (speaking) {
         "Neko, the 3D cream-and-orange cat with glasses, is replying"
     } else {
         "Neko, the animated 3D cream-and-orange cat with glasses and a golden bell"
     }
 
-    if (loadFailed) {
-        NekoCat(modifier, animate = !reducedMotion)
-        return
-    }
     AndroidView(
         modifier = modifier.semantics { contentDescription = description },
-        factory = { context -> NekoMascotWebView(context, onLoadFailed = { loadFailed = true }) },
+        factory = { context -> NekoMascotWebView(context) },
         update = { it.setAgentState(speaking = speaking, reducedMotion = reducedMotion) },
         onRelease = NekoMascotWebView::release,
     )
 }
 
 @SuppressLint("SetJavaScriptEnabled")
-private class NekoMascotWebView(context: Context, private val onLoadFailed: () -> Unit) : WebView(context) {
+private class NekoMascotWebView(context: Context) : WebView(context) {
     private var pageReady = false
     private var speaking = false
     private var reducedMotion = false
-    private var released = false
-    private val rendererCheck = Runnable {
-        if (!released) evaluateJavascript("Boolean(document.querySelector('#neko')?.loaded)") { loaded ->
-            if (!released && loaded != "true") onLoadFailed()
-        }
-    }
 
     init {
         setBackgroundColor(Color.TRANSPARENT)
@@ -82,16 +66,8 @@ private class NekoMascotWebView(context: Context, private val onLoadFailed: () -
             override fun onPageFinished(view: WebView, url: String) {
                 pageReady = url == baseUrl
                 applyAgentState()
-                if (pageReady) postDelayed(rendererCheck, 10_000)
             }
 
-            override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                if (request.isForMainFrame) onLoadFailed()
-            }
-
-            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
-                if (request.isForMainFrame) onLoadFailed()
-            }
         }
         loadUrl(baseUrl)
     }
@@ -103,8 +79,6 @@ private class NekoMascotWebView(context: Context, private val onLoadFailed: () -
     }
 
     fun release() {
-        released = true
-        removeCallbacks(rendererCheck)
         stopLoading()
         webViewClient = WebViewClient()
         removeAllViews()
